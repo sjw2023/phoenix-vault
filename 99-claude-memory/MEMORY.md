@@ -2,3 +2,4 @@
 - [Phoenix state](project-phoenix-state.md) — paper-only M0 phase, no code until "go build"; open decisions as of 2026-09-15
 - [Design depth](feedback-phoenix-design-depth.md) — full per-feature game + technical specs with OOP and multiplayer design, reviewed twice
 - [Push vault](feedback-push-vault-changes.md) — standing permission: commit + push the vault and memory copy whenever notes change
+- [Step by step](feedback-step-by-step-learning.md) — user is learning: one topic per turn, apply to Phoenix, then wait
