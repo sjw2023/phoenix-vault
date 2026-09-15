@@ -77,6 +77,8 @@ Two axes, four quadrants, four forms:
               └──────────────────────────┴──────────────────────────┘
 ```
 
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683756097721); **this note is canonical.**
+
 | form | orientation | the reader is saying | shape |
 |---|---|---|---|
 | **Tutorial** | learning-oriented | *"I'm new — teach me by doing something that works."* | A guided lesson with a guaranteed outcome. You choose the path. |

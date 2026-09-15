@@ -110,6 +110,8 @@ UObject
     └── UPrimaryDataAsset      Engine/Classes/Engine/DataAsset.h:47
 ```
 
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683755799081); **this note is canonical.**
+
 **Rule [design]:** in C++, inherit from **one** engine class whose *role* you are filling. Blueprint subclasses of that class, for tuning and wiring, are fine. `APhoenixCharacter :
 ACharacter` is correct — Phoenix's character *is* a character to the engine. `AFireSkeleton : ASkeleton : AEnemy
 : ACharacter` is wrong — that is using inheritance to describe *content*, which is data (§6). [[Architecture]]
@@ -132,6 +134,8 @@ BP_Enemy (subclass of APhoenixCharacter)
 ├── UHitboxComponent
 └── AI: APhoenixAIController possesses it
 ```
+
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683755799281); **this note is canonical.**
 
 Player, every enemy and the boss share `UStatsComponent` and `UHealthComponent`. A "fast melee" and a "ranged"
 enemy differ by **component settings and data**, not by class.
@@ -237,6 +241,8 @@ graph TD
   Enemy -. "TWeakObjectPtr (target, does not own)" .-> Char
 ```
 
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683756097311); **this note is canonical.**
+
 Solid arrows own; the dotted arrow only *refers*. An enemy targeting the player must not keep a dead or
 disconnected player alive, so it holds a weak pointer.
 
@@ -251,6 +257,8 @@ graph TD
   Components["Components<br/>(UHealthComponent, UHitboxComponent, UStatsComponent)"] --> Data
   Data["Data & rules<br/>(FStatModifier, damage math, Data Assets)"]
 ```
+
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683756097313); **this note is canonical.**
 
 When a lower layer needs to tell a higher one something ("I died"), it **broadcasts a delegate**; the higher
 layer subscribes. **[engine]** `Core/Public/Delegates/DelegateCombinations.h:53` defines

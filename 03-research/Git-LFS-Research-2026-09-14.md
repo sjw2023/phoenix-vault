@@ -142,6 +142,8 @@ in and the way out. This is why it is invisible in daily use.
    the actual 40 MB file on disk
 ```
 
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683755799841); **this note is canonical.**
+
 Two stores instead of one: git holds pointers and source; LFS holds bytes. `add` / `commit` /
 `push` / `checkout` behave normally — the filters run underneath.
 

@@ -14,9 +14,8 @@ engine: Unreal Engine 5.8.2
 > [[OOP-Foundations]]; its class-design checklist is filled in for every class in §2.2.
 > **Planning only. Code blocks are illustrative and uncompiled. No game code is written until "go build".**
 
-> [!important] **Requirement held to.** v1 is single-player, and every mechanism must be correct in **Standalone**,
-> **Listen Server** and **Client** ([[Combat#8. Multiplayer|Combat §8]]). Whether passing in all three is a v1 release
-> gate is open question 1.
+> [!important] **Requirement held to.** Friends can join and play in v1 ([[Decisions]] ADR-007), so every mechanism
+> must be correct in **Standalone**, **Listen Server** and **Client**, and passing in all three is a **v1 release gate**.
 
 Engine citations are to `/Users/Shared/Epic Games/UE_5.8/Engine/Source/`, UE 5.8.2, all opened on 2026-09-15.
 
@@ -25,6 +24,7 @@ Engine citations are to `/Users/Shared/Epic Games/UE_5.8/Engine/Source/`, UE 5.8
 | rev | date | what changed |
 |---|---|---|
 | r1 | 2026-09-15 | First draft — pilot of the technical-spec template. |
+| r2.2 | 2026-09-15 | Sequence diagrams in §1 and §5.1 brought in line with r2.1 (`ClientSerial`, `SourceClientSerial`, cancel clears pending) — they had been missed. |
 | r2.1 | 2026-09-15 | Aligned with [[Network-Protocol]] r2: `ClientSerial`, cancel during recovery, `Team` and `MaxHealth` notify replicated, killer server-only, engine cap on `MulticastHit`. |
 | **r2** | **2026-09-15** | After a design review and a claim-verification review (127 claims checked, 24 false). Every finding re-checked against engine source before being applied. Three r1 mechanisms did not work for a client; see **§16** for every change. |
 
@@ -52,11 +52,11 @@ sequenceDiagram
   Note over C: Click an enemy (Combat §3)
   C->>C: Walk to the enemy locally<br/>client-side navigation (§5.1)
   C->>C: Play own windup tell early<br/>cosmetic only (§6.1)
-  C->>S: ServerRequestAttack(Target)<br/>Server, Reliable, once per click (§6.2)
+  C->>S: ServerRequestAttack(Target, ClientSerial)<br/>Server, Reliable, once per click (§6.2)
   S->>S: CheckHit without range<br/>fails: ignore, Verbose log (§10)
   S->>S: APPROACH until in melee range<br/>give up after 3 s (§5.1)
   S->>S: WINDUP 0.15 s (Combat §4.1)
-  S->>E: AttackRep replicates: windup tell<br/>owner skips its own serial (§6.1)
+  S->>E: AttackRep replicates: windup tell<br/>owner skips a SourceClientSerial it already played (§6.1)
   S->>S: IMPACT: CheckHit with range (§10)
   alt Hit
     S->>S: roll = FRand, PhoenixDamage::Resolve<br/>pure function, tests T1 to T16 (§11.1)
@@ -164,6 +164,8 @@ classDiagram
   APhoenixCharacter ..> APhoenixGameMode : player death
 ```
 
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683755344920); **this note is canonical.**
+
 `*--` = created in the character's C++ constructor. `UHitFeedbackComponent` has **no** `*--` edge from the C++
 character on purpose — it is added in the Blueprint, so the gameplay layer never depends on the feedback layer.
 
@@ -259,31 +261,33 @@ sequenceDiagram
 
   C->>C: pick enemy near cursor (§3 pick rule)
   C->>C: SimpleMoveToActor(Enemy) — local walk
-  C->>C: play own windup tell early when in range (cosmetic, AttackSerial n)
-  C->>S: ServerRequestAttack(Enemy)   [Server, Reliable — once per click]
+  C->>C: play own windup tell early when in range (cosmetic, ClientSerial n)
+  C->>S: ServerRequestAttack(Enemy, ClientSerial n)   [Server, Reliable — once per click]
   S->>S: RequestAttack → CheckHit(bRequireRange=false)
   alt check != Ok
-    S->>S: ignore; log EPhoenixHitCheck at Verbose
+    S->>S: ignore, log EPhoenixHitCheck at Verbose
   else Ok
     S->>S: Phase = APPROACH (timeout ApproachGiveUp)
     Note over S: each tick: distance ≤ MeleeRange → WINDUP
-    S-->>All: AttackRep replicates (Phase, AttackSerial)
-    All->>All: OnRep_Attack → windup tell (owner skips serial it already played)
+    S-->>All: AttackRep replicates (Phase, AttackSerial, SourceClientSerial n)
+    All->>All: OnRep_Attack → windup tell (owner skips SourceClientSerial n, already played)
     Note over S: after Windup
     S->>S: IMPACT → CheckHit(bRequireRange=true)
     alt Ok
-      S->>S: roll = Random.FRand(); Resolve(A, D, roll, Rules)
-      S->>S: Target Health->ApplyDamage(Result, Instigator)
+      S->>S: roll = Random.FRand(), Resolve(A, D, roll, Rules)
+      S->>S: Target UHealthComponent::ApplyDamage(Result, Instigator)
       S-->>All: Health replicates → health bars
       S-->>All: MulticastHit(Dealt, bCrit, Instigator)  [NetMulticast, Unreliable]
       All->>All: UHitFeedbackComponent plays feedback
     else miss
       S-->>All: MulticastWhiff()  [NetMulticast, Unreliable]
     end
-    S->>S: RECOVERY → run the pending request if any
+    S->>S: RECOVERY → run the pending request if any (a ServerCancelAttack clears it)
   end
   C->>C: PlayerTick: within approach distance → StopMovement()
 ```
+
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683755344924); **this note is canonical.**
 
 **In Standalone** the client and server are one game instance and `NM_Standalone` is *"Still considered a server
 because it has all server functionality"* (`Engine/Classes/Engine/EngineBaseTypes.h:980`). The RPC runs locally.
@@ -352,6 +356,8 @@ sequenceDiagram
   S-->>All: bIsDead replicates
   All->>All: OnRep_IsDead → HandleDeath() → collision off, burst if fresh
 ```
+
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683755344923); **this note is canonical.**
 
 `SetLifeSpan` — `Actor.h:2307`. `LaunchCharacter` — `Character.h:908`.
 
@@ -640,7 +646,7 @@ Content/Data/Combat/       DA_AttackProfile_Player, DA_AttackProfile_Cube, DA_Hi
 
 ## 15. Open questions
 
-1. **Multiplayer scope** ([[Combat#14. Open questions|Combat §14]] Q1) — is §11.3 a v1 **release gate**?
+1. ~~**Multiplayer scope**~~ — **decided (ADR-007): friends can join, so §11.3 is a v1 release gate.**
 2. **Approve names.** Classes: `UCombatComponent`, `UPhoenixCombatSettings`, `UAttackProfile`, `UHitFeedbackTuning`,
    `UHitFeedbackComponent`, `UPhoenixCombatRandom`. Namespace `PhoenixDamage` and `Resolve`. Enums: `EPhoenixDamageType`,
    `EPhoenixTeam`, `EPhoenixAttackPhase`, `EPhoenixHitCheck`. Structs: `FPhoenixDamageRules`, `FPhoenixAttackerNumbers`,

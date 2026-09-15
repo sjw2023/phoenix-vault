@@ -72,6 +72,7 @@ tags: [project/phoenix, gamedev]
 - [x] **Version control set up** — git + LFS, rules in place before the first asset (2026-09-14)
 - [x] Vault restructured into numbered clusters, matching the RPS / Vault-API convention (2026-09-14)
 - [x] [[Documentation-Framework]] written
+- [x] **Co-op in v1: friends can join** — [[Decisions]] ADR-007 (2026-09-15)
 - [x] Engine question settled: **stay on Unreal**; own engine = separate later project — [[Decisions]] ADR-005
 - [ ] **Project reset to empty (2026-09-14)** — rebuilding from scratch by hand as a learning exercise. Old scaffold recoverable at git tag `pre-reset`.
 - [ ] Hand-write `Phoenix.uproject` and the module/target files, understanding each field

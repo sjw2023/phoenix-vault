@@ -19,6 +19,7 @@ tags: [project/phoenix, gamedev, gdd]
 |---|---|---|
 | 0.1 | 2026-07-13 | First draft (Godot era) |
 | 0.2 | 2026-08-03 | Engine switched to Unreal Engine 5 |
+| 0.3.1 | 2026-09-15 | Co-op multiplayer moved into scope (ADR-007). |
 | **0.3** | **2026-09-14** | v1 renamed from "vertical slice" to **Alpha**; build order superseded by milestones in [[Production-Plan-2026-09-14]]; pillars given tests; platform macOS; UE 5.8; stale Godot and install text struck |
 
 > Superseded text is struck rather than deleted.
@@ -44,7 +45,9 @@ Anything that doesn't serve one of these three is out of scope for v1.
 > [!note] Renamed in v0.3. ~~v1 = vertical slice~~. This list is every v1 feature, which is the industry meaning of **Alpha**. A much smaller **vertical slice** milestone now comes first — see [[Production-Plan-2026-09-14#M2 — Vertical Slice|Production Plan M2]].
 **In scope:** a single character in top-down view, click-to-move, one or two active skills, a single zone populated with several enemy kinds spawning in packs, enemies that drop items on death, items with rarity tiers and randomized affixes, an inventory + equipment slots that change stats, a small passive tree (a few dozen nodes) granting stat bonuses per level, and an end boss as a goal.
 
-**Out of scope (later versions):** multiplayer, trading, online features; the full 1000+ node tree; socketed skill gems (v1 uses a simpler skill system); crafting/item modification; multiple acts / campaign story; endgame maps/Atlas; leagues, seasons, economy; voice acting, cutscenes, heavy narrative.
+**Co-op is in scope** — a friend can join and play together ([[Decisions]] ADR-007).
+
+**Out of scope (later versions):** ~~multiplayer,~~ trading, online features; the full 1000+ node tree; socketed skill gems (v1 uses a simpler skill system); crafting/item modification; multiple acts / campaign story; endgame maps/Atlas; leagues, seasons, economy; voice acting, cutscenes, heavy narrative.
 
 Keeping this line bright is the single most important thing for actually finishing.
 

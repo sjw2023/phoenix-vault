@@ -10,6 +10,27 @@ tags: [project/phoenix, gamedev, decisions]
 
 A running log of decisions for the Phoenix project. Newest first. See [[HOME]] for the index and [[Design-Doc]] for full rationale.
 
+## 2026-09-15 — Friends can join: co-op multiplayer is in v1
+
+### ADR-007: v1 lets a friend join and play together
+**Status:** Accepted — user, 2026-09-15: *"Yes, friend can join"*.
+**Context:** Earlier the same day the user chose "option B": server-authoritative architecture that also works as
+single-player ([[OOP-Foundations#7. Multiplayer-ready objects (decision: option B)|OOP-Foundations §7]]). Whether
+multiplayer actually **ships** in v1 was left open ([[Combat#14. Open questions|Combat §14]] Q1).
+**Decision:** v1 supports co-op — a friend can join a game and play together. The architecture stays
+server-authoritative, as designed in [[OOP-Foundations]] and [[Network-Protocol]].
+**Consequences:**
+- The three-mode multiplayer matrix ([[Combat-Tech#11.3 Multiplayer matrix|Combat-Tech §11.3]]) becomes a **v1 release gate**,
+  not a readiness check — for every feature.
+- A new feature spec is needed: **Sessions and joining** — how a friend finds and joins a game.
+- Loot and XP **sharing** must be designed in the Loot and Progression specs.
+- Player death needs a co-op rule (revive by a friend or respawn) — open.
+- [[Design-Doc]] §3 no longer lists multiplayer as out of scope.
+- Networking scope grows: every feature spec now carries a real multiplayer cost.
+**Open:** hosting model (one player hosts, or a separate server); maximum players; how friends connect.
+**Alternatives considered:** v1 single-player with multiplayer-ready code (the earlier default — replaced by this
+decision).
+
 ## 2026-09-14 — Toolchain: Unreal Engine 5.8 + Xcode 26.1.1, macOS only
 
 ### ADR-006: Use UE 5.8 with the existing Xcode 26.6; target macOS only for now

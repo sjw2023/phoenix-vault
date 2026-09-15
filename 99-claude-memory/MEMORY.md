@@ -1,3 +1,4 @@
 - [Phoenix vault](reference-phoenix-vault.md) — all Phoenix design/decisions live in the Obsidian vault; start at HOME.md
 - [Phoenix state](project-phoenix-state.md) — paper-only M0 phase, no code until "go build"; open decisions as of 2026-09-15
 - [Design depth](feedback-phoenix-design-depth.md) — full per-feature game + technical specs with OOP and multiplayer design, reviewed twice
+- [Push vault](feedback-push-vault-changes.md) — standing permission: commit + push the vault and memory copy whenever notes change

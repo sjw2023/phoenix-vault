@@ -6,7 +6,7 @@ A **copy** of Claude Code's project memory for Phoenix, kept here so it can be r
 |---|---|
 | **Canonical location** | `~/.claude/projects/-Users-joowon-Workspace-phoenix/memory/` on the development Mac — Claude reads and writes there |
 | **This folder** | A snapshot copy, not a link. It goes stale until re-copied |
-| **Last synced** | 2026-09-15 |
+| **Last synced** | 2026-09-15 (second sync: push permission, co-op decision) |
 | **Filenames** | Hyphenated to match each note's `name:` slug, so `[[wiki-links]]` resolve in Obsidian. The canonical files use underscores |
 
 ## What is in it

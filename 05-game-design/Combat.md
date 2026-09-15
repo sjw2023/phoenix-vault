@@ -78,6 +78,8 @@ cursor, the one nearest to that point.
                  in range)       can't move)     here)     input buffered)
 ```
 
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683755344922); **this note is canonical.**
+
 | value | starting value (H) | note |
 |---|---|---|
 | Windup | 0.15 s | Short enough to feel responsive; long enough to read |
@@ -205,9 +207,7 @@ playtesting cannot tell which one matters.
 
 ## 8. Multiplayer
 
-**Decision context:** Phoenix v1 is single-player, built to be playable with several players. Stated in chat on
-2026-09-15 as "option B". **Not yet recorded in [[Decisions]]**, and [[Design-Doc#3. Scope (v1 = Alpha: every v1 feature functional)|Design-Doc §3]]
-still lists multiplayer as out of scope — both are resolved by an ADR once the scope question in §14 is answered.
+**Decision:** friends can join and play together in v1 — [[Decisions]] ADR-007 (2026-09-15).
 
 | question | answer [design] |
 |---|---|
@@ -284,10 +284,9 @@ Pillar playtests are defined in [[Production-Plan-2026-09-14]] (§3); its thresh
 
 ## 14. Open questions
 
-1. **Multiplayer scope for v1** — can a friend **actually join and play** in v1, or does v1 ship single-player with the
-   structure ready? Decides whether [[Combat-Tech#11.3 Multiplayer matrix|Combat-Tech §11.3]] is a release gate.
-2. **Player death rules** (§6.3) — respawn at the zone entrance with no penalty?
-3. **Single target or cleave** (§4.2 rule 1) — the reviewers point out that a single-target attack at 2.5 hits per
+1. ~~**Multiplayer scope for v1**~~ — **decided: friends can join** (ADR-007). [[Combat-Tech#11.3 Multiplayer matrix|Combat-Tech §11.3]] is a v1 release gate.
+2. **Player death rules** (§6.3) — death at 0 HP confirmed by the user. **Still open:** what happens next in co-op — a friend can revive, or respawn at the zone entrance, and any penalty?
+3. **Single target or cleave** (§4.2 rule 1) — **user: both.** Design options being prepared. — the reviewers point out that a single-target attack at 2.5 hits per
    second, with no skills in M1, kills a pack **one at a time** — the "to-do list" §2.4 rejects. A small cleave (e.g.
    a 90° arc, 50 % damage to other targets **(H)**) would let M1's playtest test "packs die in bursts". **Decide before
    M1.**

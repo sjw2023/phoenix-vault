@@ -28,6 +28,8 @@ M0 Pre-production ──► M1 First Playable ──► M2 Vertical Slice ──
                                                                                                     tuned)         playable)
 ```
 
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683756097734); **this note is canonical.**
+
 - **Every milestone ends on a yes/no checklist** (§3). "Are we at M2?" is answered by ticking boxes, not by feel.
 - **Combat feel is proven first**, in M1, before loot, inventory, skills or passives exist (fixes G1).
 - **"Vertical slice" now means what the industry means**: a small section at near-final quality (M2). The old

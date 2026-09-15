@@ -48,6 +48,8 @@ Content/
 Config/                         # DefaultEngine.ini, DefaultGame.ini
 ```
 
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683757480834), drawn as plain boxes: Miro's content filter rejected it twice as a Mermaid diagram (HTTP 403, 2026-09-15), so the board version **shortens exact file names**. **This note is canonical.**
+
 Rule: **C++ defines systems and base classes in `Source/`; Blueprints in `Content/Blueprints/` subclass them for tuning and designer-facing wiring.** New number-affecting content is a **Data asset**, not a new C++ class (see below).
 
 ## Composition: Actor + Component
@@ -61,6 +63,8 @@ BP_Enemy (subclass of APhoenixCharacter)
 ├── UHitboxComponent     # deals/receives damage
 └── AI: APhoenixAIController possesses it, runs a Behavior Tree
 ```
+
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683755799281); **this note is canonical.**
 
 A "fast melee" vs a "ranged" enemy are the **same character class + different components/data + a different Behavior Tree** — not two subclasses. `UStatsComponent` and `UHealthComponent` are written once and reused by the player, every enemy, and the boss. That reuse is exactly why the stat spine was built first.
 

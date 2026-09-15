@@ -144,6 +144,8 @@ the same channel.
 +----------------------+---------------------------------------------------------------------------+
 ```
 
+> [!note] Readable copy on the [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/?moveToWidget=3458764683756040984); **this note is canonical.**
+
 **So:** a combat RPC on `UHealthComponent` travels on its **character's** actor channel, as a content chunk for that
 component.
 
