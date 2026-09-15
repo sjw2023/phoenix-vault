@@ -36,6 +36,9 @@ tags: [project/phoenix, gamedev]
 ### Build steps — `02-build-steps/`
 - [[Step-1-Move-and-Attack]] — technical spec for build step 1
 
+### Claude memory — `99-claude-memory/`
+- [[99-claude-memory/README|Claude project memory (copy)]] — snapshot of Claude's working memory for this project; synced 2026-09-15
+
 ### Diagrams — Miro
 - [Phoenix Miro board](https://miro.com/app/board/uXjVHndMfFs=/) — readable copies of vault diagrams; **the vault stays canonical**
 
