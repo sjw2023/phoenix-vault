@@ -1,0 +1,11 @@
+.DS_Store
+.trash/
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+
+# accidental empty Obsidian notes and canvases
+Untitled*.md
+Untitled*.canvas
+무제*.md
+무제*.canvas
