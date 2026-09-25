@@ -19,8 +19,9 @@ oriented, facts and mechanism, no design decisions. Decisions go to [[Decisions]
 | Toolchain — can this Mac compile Unreal C++? | [[Toolchain-Research-2026-09-14\|Toolchain — Research]] | `research-draft` | **UE 5.5.4 + Xcode 26.6 cannot build (tested, exit 6).** No Xcode is inside both UE 5.5's range and Apple's support for macOS 26.6.2. Only UE 5.8 + Xcode 26.1.1 is documented as supported by both vendors, and it is untested. |
 | Game production — how studios plan, vs the design doc | [[Game-Production-Research-2026-09-14\|Game Production — Research]] | `research-draft` | Milestones mean only what their **written exit criteria** say. Prototype the core loop first. **Gap G1:** pillar 1 (combat feel) is only checked at build step 9. |
 | Unreal networking — from gameplay call to UDP | [[Unreal-Networking-Research-2026-09-15\|Unreal Networking — Research]] | `research-draft` | UDP packets ≤ 1024 bytes; bit-packed bunches on channels; engine-built acks and resends; reliable queue 512. **Iris is off by default in 5.8 — Phoenix uses legacy replication.** |
+| Bevy — moving Phoenix to Rust | [[Bevy-Research-2026-09-25\|Bevy — Research]] | `research-draft` | ECS, **no editor yet** ("upcoming Bevy Editor"), breaking changes every release ("still in the experimentation phase"). Physics, navmesh and server-authoritative networking crates all exist on 0.19. |
 
-**Four topics.**
+**Five topics.**
 
 ## Open questions across the cluster
 
