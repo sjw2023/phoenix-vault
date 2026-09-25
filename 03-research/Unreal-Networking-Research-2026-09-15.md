@@ -9,6 +9,9 @@ engine: Unreal Engine 5.8.2
 
 # Unreal Networking — Research
 
+> [!warning] **Superseded 2026-09-25 — written for Unreal Engine.** Phoenix moved to Rust + Bevy ([[Decisions]] ADR-008). Kept as history; the reasoning may still be useful, the mechanisms are not. Engine-independent design lives in [[Design-Doc]] and [[Combat]].
+
+
 > [!info] **Scope.** How a gameplay call such as `ServerRequestAttack(Target)` becomes bytes on the wire in Unreal
 > Engine 5.8, and what controls how much is sent. **Facts only — no design.** The design that uses these facts is
 > [[Network-Protocol]].

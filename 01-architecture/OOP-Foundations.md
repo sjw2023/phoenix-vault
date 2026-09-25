@@ -9,6 +9,9 @@ engine: Unreal Engine 5.8.2
 
 # OOP Foundations
 
+> [!warning] **Superseded 2026-09-25 — written for Unreal Engine.** Phoenix moved to Rust + Bevy ([[Decisions]] ADR-008). Kept as history; the reasoning may still be useful, the mechanisms are not. Engine-independent design lives in [[Design-Doc]] and [[Combat]].
+
+
 > [!info] **What this is.** The object-oriented ideas every Phoenix class is designed with, each shown in Unreal
 > C++ terms and tied to Phoenix's own classes. It is the base layer under every technical spec in
 > `01-architecture/` (the first is [[Combat-Tech]]). **Explanation form** in [[Documentation-Framework]] terms:

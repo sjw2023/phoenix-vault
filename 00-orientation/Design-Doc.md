@@ -3,7 +3,7 @@ type: design-doc
 project: Phoenix
 version: 0.3 draft
 updated: 2026-09-14
-engine: Unreal Engine 5.8 (C++)
+engine: Rust + Bevy 0.19
 view: 3D top-down
 platform: macOS
 tags: [project/phoenix, gamedev, gdd]
@@ -11,7 +11,7 @@ tags: [project/phoenix, gamedev, gdd]
 
 # Phoenix — Design Doc
 
-*A POE2-like action RPG. First game project. Learning-focused.* — Version 0.3 draft · 2026-09-14 · Engine: Unreal Engine 5.8 (C++), 3D top-down · Platform: macOS
+*A POE2-like action RPG. First game project. Learning-focused.* — Version 0.3 draft · 2026-09-14 · Engine: Rust + Bevy 0.19, 3D top-down · Platform: macOS
 
 ## Revision history
 
@@ -19,6 +19,7 @@ tags: [project/phoenix, gamedev, gdd]
 |---|---|---|
 | 0.1 | 2026-07-13 | First draft (Godot era) |
 | 0.2 | 2026-08-03 | Engine switched to Unreal Engine 5 |
+| 0.4 | 2026-09-25 | Engine switched to Rust + Bevy (ADR-008). |
 | 0.3.1 | 2026-09-15 | Co-op multiplayer moved into scope (ADR-007). |
 | **0.3** | **2026-09-14** | v1 renamed from "vertical slice" to **Alpha**; build order superseded by milestones in [[Production-Plan-2026-09-14]]; pillars given tests; platform macOS; UE 5.8; stale Godot and install text struck |
 

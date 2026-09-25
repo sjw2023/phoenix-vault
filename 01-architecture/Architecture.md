@@ -8,6 +8,9 @@ tags: [project/phoenix, gamedev, architecture]
 
 # Phoenix — Architecture
 
+> [!warning] **Superseded 2026-09-25 — written for Unreal Engine.** Phoenix moved to Rust + Bevy ([[Decisions]] ADR-008). Kept as history; the reasoning may still be useful, the mechanisms are not. Engine-independent design lives in [[Design-Doc]] and [[Combat]].
+
+
 The technical layer between [[Design-Doc]] (the *what/why*) and the actual C++ (the *how in detail*), for **Unreal Engine 5**. This is the "where does code go, and how do objects relate?" doc — and it matters more here than it would have in Godot, because Unreal is inheritance-heavy and will happily let you build a tangled class tree. The whole job of this doc is to keep Phoenix on the **composition** side of Unreal. See also [[Coding-Conventions]] and [[System-Design]].
 
 ## The one mental model

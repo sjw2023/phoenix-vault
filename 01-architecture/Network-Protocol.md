@@ -9,6 +9,9 @@ engine: Unreal Engine 5.8.2
 
 # Network Protocol
 
+> [!warning] **Superseded 2026-09-25 — written for Unreal Engine.** Phoenix moved to Rust + Bevy ([[Decisions]] ADR-008). Kept as history; the reasoning may still be useful, the mechanisms are not. Engine-independent design lives in [[Design-Doc]] and [[Combat]].
+
+
 > [!info] **What this is.** The **one list** of every message Phoenix sends over the network: client commands, server
 > events and replicated state, across all features. **Reference form** in [[Documentation-Framework]] terms — a
 > lookup table, not an explanation. How the engine carries these messages: [[Unreal-Networking-Research-2026-09-15]].

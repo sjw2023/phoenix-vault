@@ -10,6 +10,38 @@ tags: [project/phoenix, gamedev, decisions]
 
 A running log of decisions for the Phoenix project. Newest first. See [[HOME]] for the index and [[Design-Doc]] for full rationale.
 
+## 2026-09-25 — Engine switched: Unreal Engine 5 → Rust + Bevy (SUPERSEDES the 2026-08-03 engine decision)
+
+### ADR-008: Build Phoenix in Rust with Bevy
+**Status:** Accepted — user, 2026-09-25.
+**Context:** Unreal was chosen on 2026-08-03 to play to C++ strength, with the tradeoff recorded that Unreal is
+inheritance-heavy and the developer is "weak at OOP structuring". Facts on Bevy: [[Bevy-Research-2026-09-25]].
+**Decision:** Phoenix is built in **Rust** with **Bevy 0.19**, pinned through the first milestone.
+**Why:**
+- **ECS removes the thing Unreal made harder.** Data in components, behaviour in systems; no class hierarchy to
+  design badly — the exact risk ADR of 2026-08-03 flagged.
+- **Rust's compiler catches ownership, null and data-race mistakes** that C++ leaves to the developer.
+- **Everything is code and data files**, diffable in git, editable in vim; the developer wants to wire systems by
+  hand as the way to learn them.
+- The ecosystem covers the game's needs on 0.19: `avian3d` (physics), `vleue_navigator` (navmesh, click-to-move),
+  `bevy_replicon` (server-authoritative networking, matching ADR-007).
+**Tradeoffs accepted:**
+- **No editor** — levels, spawns and tuning are files, not a viewport ("the upcoming Bevy Editor", 0.19 post).
+- **Breaking changes every release** — bevy.org: *"still in the 'experimentation phase'"*. Mitigation: pin 0.19 and
+  migrate deliberately.
+- Assets, animation, character movement and UI are hand-wired or crates, not engine defaults.
+- The Unreal-specific specs are retired (below). Roughly 2,000 lines of design work, kept as history.
+**Consequences:**
+- **Superseded, kept as history:** [[Combat-Tech]], [[Network-Protocol]], [[OOP-Foundations]], [[Architecture]],
+  [[Coding-Conventions]], [[Toolchain-Research-2026-09-14]], [[Unreal-Networking-Research-2026-09-15]],
+  [[Step-1-Move-and-Attack]].
+- **Unchanged:** [[Design-Doc]], [[Combat]] (rules, damage formula, feedback, edge cases), ADR-007 co-op,
+  [[Production-Plan-2026-09-14]] milestones, the documentation framework.
+- New notes needed as we go: Rust/Bevy architecture, ECS conventions, and the combat technical spec rewritten for ECS.
+**Alternatives considered:** stay on Unreal (rejected — the inheritance grain and the editor-first workflow are not
+what the developer wants to learn); Rust without Bevy, engine from scratch (that remains the separate project of
+ADR-005).
+
 ## 2026-09-15 — Friends can join: co-op multiplayer is in v1
 
 ### ADR-007: v1 lets a friend join and play together

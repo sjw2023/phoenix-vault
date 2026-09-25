@@ -10,6 +10,9 @@ tags: [project/phoenix, gamedev, spec, step-1]
 
 # Phoenix — Step 1: Move & Attack
 
+> [!warning] **Superseded 2026-09-25 — written for Unreal Engine.** Phoenix moved to Rust + Bevy ([[Decisions]] ADR-008). Kept as history; the reasoning may still be useful, the mechanisms are not. Engine-independent design lives in [[Design-Doc]] and [[Combat]].
+
+
 Technical spec for the first build step from the [[Design-Doc|build order]], for **Unreal Engine 5, C++, 3D top-down**: a controllable character in an empty level that click-to-moves and does a placeholder attack, viewed from a fixed top-down camera (like Path of Exile). The real goal is **learning Unreal's Gameplay Framework** — Actor/Pawn/Controller/GameMode, components, Enhanced Input, and navigation. The gameplay is deliberately thin. Follows [[Architecture]] and [[Coding-Conventions]].
 
 ## Prerequisites (one-time setup)

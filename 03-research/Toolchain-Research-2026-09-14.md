@@ -7,6 +7,9 @@ tags: [phoenix, research, unreal, xcode, macos, toolchain]
 
 # Toolchain — Research
 
+> [!warning] **Superseded 2026-09-25 — written for Unreal Engine.** Phoenix moved to Rust + Bevy ([[Decisions]] ADR-008). Kept as history; the reasoning may still be useful, the mechanisms are not. Engine-independent design lives in [[Design-Doc]] and [[Combat]].
+
+
 > [!info] **Scope.** Can this Mac compile Unreal C++ at all, and which Unreal Engine + Xcode
 > combinations are candidates? **Facts only — no decision.** macOS only; Windows is out of scope.
 

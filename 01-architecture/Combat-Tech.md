@@ -10,6 +10,9 @@ engine: Unreal Engine 5.8.2
 
 # Combat — Technical Design
 
+> [!warning] **Superseded 2026-09-25 — written for Unreal Engine.** Phoenix moved to Rust + Bevy ([[Decisions]] ADR-008). Kept as history; the reasoning may still be useful, the mechanisms are not. Engine-independent design lives in [[Design-Doc]] and [[Combat]].
+
+
 > [!info] **What this is.** How [[Combat]] is built: classes, data, runtime flow, what runs where, tests. Built on
 > [[OOP-Foundations]]; its class-design checklist is filled in for every class in §2.2.
 > **Planning only. Code blocks are illustrative and uncompiled. No game code is written until "go build".**

@@ -8,7 +8,7 @@ metadata:
 As of 2026-09-15 Phoenix is in **M0 pre-production, paper only**. The user explicitly said it is not time to build; zero game code exists.
 The user hand-writes game code to learn (ADR-003) — Claude drafts research/plans/specs and reviews.
 
-Toolchain settled and tested: UE 5.8.2 + Xcode 26.6 + Metal toolchain component, macOS only (ADR-006 r2).
+**Engine switched 2026-09-25 to Rust + Bevy 0.19 (ADR-008)** — the Unreal toolchain work and all Unreal-specific specs are superseded but kept. The user writes the code by hand in vim and wants to wire systems manually; Claude teaches and reviews, never builds unasked.
 
 Decided 2026-09-15: **co-op is in v1 — friends can join** (ADR-007), so the 3-mode PIE matrix is a release gate and a
 "Sessions and joining" spec is needed. Player death at 0 HP confirmed.

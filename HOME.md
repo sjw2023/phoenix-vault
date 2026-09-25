@@ -2,7 +2,7 @@
 type: project
 status: active
 genre: ARPG (POE2-like)
-engine: Unreal Engine 5 (C++)
+engine: Rust + Bevy 0.19
 view: 3D top-down
 platform: PC / Desktop
 created: 2026-07-12
@@ -72,6 +72,8 @@ tags: [project/phoenix, gamedev]
 - [x] **Version control set up** — git + LFS, rules in place before the first asset (2026-09-14)
 - [x] Vault restructured into numbered clusters, matching the RPS / Vault-API convention (2026-09-14)
 - [x] [[Documentation-Framework]] written
+- [x] **Engine switched to Rust + Bevy 0.19** (2026-09-25) — [[Decisions]] ADR-008, facts in [[Bevy-Research-2026-09-25]]
+- [ ] **Next: walking skeleton** — a cargo project that opens a window and draws a ground plane and a cube
 - [x] **Co-op in v1: friends can join** — [[Decisions]] ADR-007 (2026-09-15)
 - [x] Engine question settled: **stay on Unreal**; own engine = separate later project — [[Decisions]] ADR-005
 - [ ] **Project reset to empty (2026-09-14)** — rebuilding from scratch by hand as a learning exercise. Old scaffold recoverable at git tag `pre-reset`.

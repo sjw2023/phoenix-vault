@@ -8,6 +8,9 @@ tags: [project/phoenix, gamedev, conventions, style]
 
 # Phoenix — Coding Conventions
 
+> [!warning] **Superseded 2026-09-25 — written for Unreal Engine.** Phoenix moved to Rust + Bevy ([[Decisions]] ADR-008). Kept as history; the reasoning may still be useful, the mechanisms are not. Engine-independent design lives in [[Design-Doc]] and [[Combat]].
+
+
 The C++ style guide for Phoenix, following Epic's Unreal coding standard. Goal: consistency so future code moves fast. The built `Stats/` code is the reference implementation. See [[Architecture]] for structure.
 
 ## Class prefixes (mandatory — the compiler-adjacent tooling relies on them)
