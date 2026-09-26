@@ -1,7 +1,7 @@
 ---
 type: build-log
 project: Phoenix
-updated: 2026-09-14
+updated: 2026-09-26
 engine: Unreal Engine 5 (C++)
 tags: [project/phoenix, gamedev, buildlog]
 ---
@@ -9,6 +9,25 @@ tags: [project/phoenix, gamedev, buildlog]
 # Phoenix — Build Log
 
 A running, dated log of what actually got built. Newest entries at the top. See [[HOME]] for the index.
+
+## 2026-09-26 — First Bevy code running: walking skeleton and a moving cube
+- **Rust toolchain:** installed via Homebrew (rustc + cargo 1.98.1, no rustup — so no per-project toolchain pinning).
+- **Project created:** `cargo init --name phoenix` + `cargo add bevy` → Bevy **0.19.1**, edition 2024, with Bevy's
+  recommended dev profile (`opt-level = 1`, dependencies at 3). `.gitignore` rewritten for Rust (`/target`,
+  `Cargo.lock` kept tracked).
+- **Checkpoint 1 — walking skeleton:** window opens; ground plane, point light, camera and a cube render.
+  Confirms Bevy runs on this Mac (the last NOT-verified item in [[Bevy-Research-2026-09-25]] §5).
+- **Checkpoint 2 — movement:** `Player` marker component, an `Update` system with
+  `Query<&mut Transform, With<Player>>` and `time.delta_secs()`; the cube slides frame-rate independently.
+- **Errors hit while learning, and what they taught:**
+  - `(Cuboid, Color, Transform)` is not a `Bundle` — shapes and colours are **data**, not components; they become
+    assets (`meshes.add`, `materials.add`) wrapped in `Mesh3d` / `MeshMaterial3d`.
+  - Nothing rendered at first: the `setup` system existed but was never registered with `.add_systems(Startup, setup)`.
+- **Learned so far:** App and plugins, Startup vs Update schedules, entities as component tuples, marker components,
+  queries with filters, resources (`Res<Time>`), and why `derive` is what makes a struct a Component.
+
+### Next up
+- [ ] Click-to-move: cursor → world ray → ground point, then move the cube toward it.
 
 ## 2026-09-14 — Version control, vault restructure, project reset to empty
 - **Toolchain verified (not installed — already present):** UE 5.5 at `/Users/Shared/Epic Games/UE_5.5` (59 GB), Xcode 26.6, macOS 26.6.2. The old "install UE5 + toolchain" task was stale.
