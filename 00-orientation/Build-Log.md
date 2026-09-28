@@ -50,8 +50,26 @@ A running, dated log of what actually got built. Newest entries at the top. See 
 - **What happens when the player reaches 0 HP.** Respawn at a checkpoint / friend-revive / hardcore. Ties to
   the co-op death rules parked earlier. Currently logs and does nothing.
 
+- **Checkpoint 8 — plugin split.** `main.rs` went from 235 lines to 20: six feature plugins
+  (`world`, `player`, `enemy`, `movement`, `combat`, `camera`), each owning its components, its spawn and
+  its systems. `main.rs` now contains only `mod` lines and one `add_plugins` tuple.
+- **Rule that settled ownership:** the module that defines the *behaviour* owns the component; everyone else
+  imports it. Reached the hard way — `Speed` briefly existed in two modules, and `movement::Speed` and
+  `player::Speed` are different types, so the player would have silently stopped moving with no error.
+- **Rust visibility, both directions:** a child module sees its parent's private items; a parent cannot see
+  the child's. `pub struct Foo(pub f32)` needs both `pub`s — a public struct does not get public fields.
+  `mod X;` appears exactly once per file in the program, in the parent that owns it; everywhere else it is `use`.
+
+### Regression found by the refactor check
+- `world_spawn` was registered on `Update` instead of `Startup` — a fresh ground plane and **point light every
+  frame**. `cargo check` was green throughout. Symptom was not a leak warning but
+  `ERROR bevy_render: Caught DeviceLost error` after ~4.5 s, preceded by the light clusterer doubling its
+  Z slice list (1024 to 2048) and index list (65536 to 131072). It presented as "it broke after the enemy
+  died", which was coincidence — the log timestamps show the crash landed while the enemy still had 35 HP.
+- **Lesson:** compiling is not working, and two clocks running at similar rates look like cause and effect.
+
 ### Next up
-- [ ] Split `main.rs` (235 lines, 7 systems, components at both ends of the file) into Bevy plugins.
+- [ ] Multiple enemies — proves the plugin split, and surfaces the `Single` trap.
 
 ## 2026-09-14 — Version control, vault restructure, project reset to empty
 - **Toolchain verified (not installed — already present):** UE 5.5 at `/Users/Shared/Epic Games/UE_5.5` (59 GB), Xcode 26.6, macOS 26.6.2. The old "install UE5 + toolchain" task was stale.
