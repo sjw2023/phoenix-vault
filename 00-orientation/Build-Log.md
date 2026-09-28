@@ -68,8 +68,15 @@ A running, dated log of what actually got built. Newest entries at the top. See 
   died", which was coincidence — the log timestamps show the crash landed while the enemy still had 35 HP.
 - **Lesson:** compiling is not working, and two clocks running at similar rates look like cause and effect.
 
+- **Checkpoint 9 — WASD.** Keyboard movement alongside click-to-move; holding a key removes `MoveTarget` so
+  the two schemes do not fight. `Dir3::new(direction)` does three jobs in one line: rejects the zero vector
+  (= no key held), normalizes diagonals so W+D is not 1.41x speed, and yields the type `look_to` wants.
+  A type that cannot hold an invalid value replaces a check you would otherwise have to remember.
+- **W is `-Z`**, because the camera sits at `+Z` looking back at the origin. Correct only while the camera's
+  orientation is fixed — camera rotation would force this into camera-relative space.
+
 ### Next up
-- [ ] Multiple enemies — proves the plugin split, and surfaces the `Single` trap.
+- [ ] Multiple enemies — proves the plugin split, and surfaces cleave + player-death as real decisions.
 
 ## 2026-09-14 — Version control, vault restructure, project reset to empty
 - **Toolchain verified (not installed — already present):** UE 5.5 at `/Users/Shared/Epic Games/UE_5.5` (59 GB), Xcode 26.6, macOS 26.6.2. The old "install UE5 + toolchain" task was stale.
