@@ -34,8 +34,24 @@ A running, dated log of what actually got built. Newest entries at the top. See 
 - **Bug found:** `move_player` was registered twice (`add_systems` twice), so it ran twice per frame at double
   speed. Bevy does not warn about duplicate registration.
 
+- **Checkpoint 4 — follow camera.** Fixed offset above/behind the player, `look_at` each frame. Hit Bevy's
+  documented **B0001** first: `&Transform` and `&mut Transform` in one system is refused at startup because
+  Bevy cannot prove the two queries are disjoint. Fixed with `Without<Player>` on the camera query.
+- **Checkpoint 5 — facing.** `look_to(to_target, Vec3::Y)` before the translation step, so direction is never
+  zero. Bevy's forward is **-Z**; a child cuboid at `z = -0.7` makes the rotation visible.
+- **Checkpoint 6 — a second entity.** An enemy with the *same* `MoveTarget` component walks with zero new
+  movement code — `move_player` was renamed `move_to_target` because the name had been a lie since it was
+  written. `const SPEED` became a `Speed` component: speed is a property of an entity, not of the program.
+- **Checkpoint 7 — combat.** `Health` / `Damage` / `AttackTimer(Timer)`, mirrored attack systems, and a
+  `death` system using `Option<&Player>` to branch on who died. `despawn()` takes the entity's `Children`
+  with it. Enemy dies in three hits; player death currently only logs.
+
+### Open design decision
+- **What happens when the player reaches 0 HP.** Respawn at a checkpoint / friend-revive / hardcore. Ties to
+  the co-op death rules parked earlier. Currently logs and does nothing.
+
 ### Next up
-- [ ] Camera follows the player (and the two-queries-over-Transform gotcha).
+- [ ] Split `main.rs` (235 lines, 7 systems, components at both ends of the file) into Bevy plugins.
 
 ## 2026-09-14 — Version control, vault restructure, project reset to empty
 - **Toolchain verified (not installed — already present):** UE 5.5 at `/Users/Shared/Epic Games/UE_5.5` (59 GB), Xcode 26.6, macOS 26.6.2. The old "install UE5 + toolchain" task was stale.
