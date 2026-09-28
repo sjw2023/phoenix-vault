@@ -26,8 +26,16 @@ A running, dated log of what actually got built. Newest entries at the top. See 
 - **Learned so far:** App and plugins, Startup vs Update schedules, entities as component tuples, marker components,
   queries with filters, resources (`Res<Time>`), and why `derive` is what makes a struct a Component.
 
+- **Checkpoint 3 — click-to-move works.** Cursor → `viewport_to_world` ray → `plane_intersection_point` on the
+  ground plane → `MoveTarget(Vec3)` inserted on the player → a movement system walks there and removes the
+  component on arrival. Clicking mid-walk retargets, because `insert` replaces.
+- **Design that fell out of ECS:** state is the presence of a component. No `is_moving` flag — having `MoveTarget`
+  *is* walking, and the query skips entities without it. Re-usable by enemies unchanged.
+- **Bug found:** `move_player` was registered twice (`add_systems` twice), so it ran twice per frame at double
+  speed. Bevy does not warn about duplicate registration.
+
 ### Next up
-- [ ] Click-to-move: cursor → world ray → ground point, then move the cube toward it.
+- [ ] Camera follows the player (and the two-queries-over-Transform gotcha).
 
 ## 2026-09-14 — Version control, vault restructure, project reset to empty
 - **Toolchain verified (not installed — already present):** UE 5.5 at `/Users/Shared/Epic Games/UE_5.5` (59 GB), Xcode 26.6, macOS 26.6.2. The old "install UE5 + toolchain" task was stale.
