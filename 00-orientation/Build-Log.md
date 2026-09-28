@@ -75,8 +75,19 @@ A running, dated log of what actually got built. Newest entries at the top. See 
 - **W is `-Z`**, because the camera sits at `+Z` looking back at the origin. Correct only while the camera's
   orientation is fixed — camera rotation would force this into camera-relative space.
 
+- **Checkpoint 10 — five enemies.** A position table and a `for` loop in `enemy_spawn`. **No other file
+  changed** — chase, both attack systems and death already iterate, so five enemies cost zero new behaviour
+  code. The clearest payoff so far from components-plus-systems over an inheritance hierarchy.
+- **Handles, not assets.** `meshes.add(...)` moved above the loop and each enemy gets `mesh.clone()`.
+  Cloning a `Handle<Mesh>` is a refcount bump; calling `add` inside the loop would upload five identical
+  cubes. Same failure family as the `world_spawn` DeviceLost — assets created more often than intended.
+- **Two decisions got made by accident, not by design:** `player_attack` loops over every enemy in range,
+  so cleave is now the default; and five enemies at 8 damage / 1.2 s kills a 100 HP player in ~3 s, so
+  player death stopped being deferrable. An unmade decision does not stay unmade — it gets made by
+  whoever wrote the loop.
+
 ### Next up
-- [ ] Multiple enemies — proves the plugin split, and surfaces cleave + player-death as real decisions.
+- [ ] Player death, as a Bevy state machine (`States`, `run_if(in_state(..))`, `OnEnter`).
 
 ## 2026-09-14 — Version control, vault restructure, project reset to empty
 - **Toolchain verified (not installed — already present):** UE 5.5 at `/Users/Shared/Epic Games/UE_5.5` (59 GB), Xcode 26.6, macOS 26.6.2. The old "install UE5 + toolchain" task was stale.
