@@ -125,8 +125,26 @@ A running, dated log of what actually got built. Newest entries at the top. See 
   — Bevy's message system. Deferred deliberately: learning messages while debugging 12 errors was the
   wrong order.
 
+- **Checkpoint 14 — health bar.** Bevy UI is entities and components like everything else: a dark `Node`
+  sized in `px`, with a red child `Node` sized in `percent(100)` of it, and a system that writes
+  `fill.width = percent(fraction * 100.0)`. No 2D camera needed — a root node without `UiTargetCamera`
+  renders to *"the highest order camera targeting the primary window"*, which is the `Camera3d`.
+  `clamp(0.0, 1.0)` matters because health goes negative before death is processed.
+
+### Toolchain lesson — a missing `mod` looks like a broken LSP
+- Neovim completion in `ui.rs` offered only buffer words (`abc` icon). rust-analyzer was healthy the whole
+  time: attached, idle at 0% CPU with a ~1.8 GB index, both proc-macro servers up, hover working in
+  `main.rs`. The cause was **no `mod ui;` in `main.rs`** — the file was not part of the crate, so the
+  server had nothing to say about it.
+- Third occurrence of the same root cause in one day, each wearing a different costume: a compiler error
+  (`camera.rs`), a suspicion (`App.rs`), a dead completion menu (`ui.rs`).
+- **Habit:** write the `mod` line the moment the file is created, before writing anything in it.
+- **Tell:** the editor acting dumb in one file while working in others is a missing `mod`, never the LSP.
+- Diagnostic worth keeping: `:lua =vim.tbl_map(function(c) return c.name end, vim.lsp.get_clients({bufnr=0}))`
+  prints just client names — dumping the whole client object only shows the first one.
+
 ### Next up
-- [ ] A health bar. The game is currently unplayable without watching a terminal.
+- [ ] Bevy messages — `PlayerDied`, paying the recorded `death` debt and fixing the frozen health bar.
 
 ## 2026-09-14 — Version control, vault restructure, project reset to empty
 - **Toolchain verified (not installed — already present):** UE 5.5 at `/Users/Shared/Epic Games/UE_5.5` (59 GB), Xcode 26.6, macOS 26.6.2. The old "install UE5 + toolchain" task was stale.
