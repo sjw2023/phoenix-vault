@@ -106,8 +106,27 @@ A running, dated log of what actually got built. Newest entries at the top. See 
 - **Design settled:** the basic attack is single-target; cleave becomes an *ability* that pays for hitting
   several targets. This is what the parked "both" answer actually meant.
 
+- **Checkpoint 13 — death modes.** `DeathMode { Softcore, Retry, Hardcore }` as a **resource**, not a state
+  — it is a value systems read, not something with `OnEnter`/`OnExit` transitions. `init_resource` registers
+  it; `init_state` is the other one. Keys 1/2/3 switch it, including from the game-over screen.
+  All three verified working.
+- **`Health` became `{ current, max }`.** A tuple struct is right for one field whose meaning the type name
+  already carries (`Speed(f32)`); wrong the moment there are two, because `.1` tells a reader nothing.
+  Softcore respawn is `health.current = health.max` — the component knows what full means, so `100.0`
+  is not written down in a second place.
+- **Respawn also clears `MoveTarget`.** State-as-component-presence means respawning has to remove the
+  state components too, or you teleport home and immediately walk back to where you died.
+- **`match *mode` is exhaustive** — adding the parked ally-revive variant later will make the compiler point
+  at this block and refuse to build until it is handled. Open-Closed with a safety net.
+
+### Recorded debt
+- `death` both detects death and applies the player's respawn policy, so `combat` knows where the player
+  spawns. The clean split is `death` announcing that the player died and `player` deciding what that means
+  — Bevy's message system. Deferred deliberately: learning messages while debugging 12 errors was the
+  wrong order.
+
 ### Next up
-- [ ] `DeathMode` — Softcore / Retry / Hardcore, selectable. Ally-revive parked until multiplayer.
+- [ ] A health bar. The game is currently unplayable without watching a terminal.
 
 ## 2026-09-14 — Version control, vault restructure, project reset to empty
 - **Toolchain verified (not installed — already present):** UE 5.5 at `/Users/Shared/Epic Games/UE_5.5` (59 GB), Xcode 26.6, macOS 26.6.2. The old "install UE5 + toolchain" task was stale.
