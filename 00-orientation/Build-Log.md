@@ -143,8 +143,28 @@ A running, dated log of what actually got built. Newest entries at the top. See 
 - Diagnostic worth keeping: `:lua =vim.tbl_map(function(c) return c.name end, vim.lsp.get_clients({bufnr=0}))`
   prints just client names — dumping the whole client object only shows the first one.
 
+- **Checkpoint 15 — messages, and the debt paid.** `#[derive(Message)] pub struct PlayerDied;` declared in
+  `combat.rs` beside its writer, registered once with `.add_message::<combat::PlayerDied>()`.
+  `death` now only detects death and writes the message — it lost `DeathMode`, `NextState`, `PLAYER_SPAWN`,
+  `MoveTarget`, `&mut Health` and `&mut Transform`, six dependencies, and its query went back to immutable.
+  `player.rs` owns the respawn policy; `ui.rs` empties the bar. **Verified: `combat.rs` no longer mentions
+  `PLAYER_SPAWN`, `DeathMode` or `NextState` at all.** The behaviour barely changed — the point was that
+  `combat` stopped knowing things it had no business knowing.
+- **Each `MessageReader` tracks its own read position**, so two readers both see every message. Adding a
+  third reaction later is a new reader and zero edits elsewhere.
+- **Handlers must be idempotent** unless ordered. `death` can write `PlayerDied` several times before the
+  handler restores health, because writer and reader order is not guaranteed across plugins. Setting health
+  to max twice equals once, so it is safe here; a handler that *spends* something would need `.chain()`,
+  system sets, or a marker component.
+- **Wiring is a second declaration, and the failure is quiet.** A file needs `mod`, a system needs
+  `add_systems`, a plugin needs `add_plugins`, a message needs `add_message`, a resource needs
+  `init_resource`. `clear_health_bar`, then `spawn_game_over`/`despawn_game_over`, were each written and
+  left unregistered. In a Bevy project a `never used` warning on a function you just wrote almost always
+  means a missing registration.
+
 ### Next up
-- [ ] Bevy messages — `PlayerDied`, paying the recorded `death` debt and fixing the frozen health bar.
+- [ ] Game-over screen (text UI) — written, needs registering.
+- [ ] Enemy separation — they currently pile into one cube.
 
 ## 2026-09-14 — Version control, vault restructure, project reset to empty
 - **Toolchain verified (not installed — already present):** UE 5.5 at `/Users/Shared/Epic Games/UE_5.5` (59 GB), Xcode 26.6, macOS 26.6.2. The old "install UE5 + toolchain" task was stale.
