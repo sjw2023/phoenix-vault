@@ -86,8 +86,28 @@ A running, dated log of what actually got built. Newest entries at the top. See 
   player death stopped being deferrable. An unmade decision does not stay unmade — it gets made by
   whoever wrote the loop.
 
+- **Checkpoint 11 — state machine.** `AppState { Playing, GameOver }`. Gameplay systems carry
+  `.run_if(in_state(AppState::Playing))`; player and enemy spawns moved from `Startup` to
+  `OnEnter(AppState::Playing)`, so **restart is a state transition** and there is only ever one code path
+  that creates an actor. `OnExit(AppState::Playing)` despawns everything with `Player` or `Enemy`.
+  `world` and `camera` stay on `Startup` — they belong to the app, not to a run.
+- **Bugs that compiled cleanly:** `run_if(AppState::Playing)` (a run condition is a function call —
+  `in_state(..)`); `Or<With<A>>, With<B>>` (`Or` takes one tuple, and `Query` only ever has two type
+  parameters); `enemy_chase` left ungated so enemies kept chasing the corpse; and
+  `next_state.set(AppState::Playing)` inside `death` — a no-op transition that would have looked like
+  "states don't work." The type checker verified all four.
+- **Checkpoint 12 — single-target attack.** `player_attack` was damaging every enemy in range from one
+  timer tick: four `hit enemy` lines in the same millisecond. Player dps was `31.25 x N`, enemy dps
+  `6.67 x N` — a **fixed 4.7:1 ratio regardless of N**, so enemy count had no effect on difficulty at all.
+  Replaced with nearest-target selection: an immutable scan recording `(distance, Entity)`, then one
+  `enemies.get_mut(target)` write. Read-then-write is the ECS shape for "pick one of many and act on it".
+- **Measured after the fix:** five enemies take the player 100 to -12 HP in ~5 s, `You Died` fires, `R`
+  restarts with a fresh player and five fresh enemies. Enemy count now means something.
+- **Design settled:** the basic attack is single-target; cleave becomes an *ability* that pays for hitting
+  several targets. This is what the parked "both" answer actually meant.
+
 ### Next up
-- [ ] Player death, as a Bevy state machine (`States`, `run_if(in_state(..))`, `OnEnter`).
+- [ ] `DeathMode` — Softcore / Retry / Hardcore, selectable. Ally-revive parked until multiplayer.
 
 ## 2026-09-14 — Version control, vault restructure, project reset to empty
 - **Toolchain verified (not installed — already present):** UE 5.5 at `/Users/Shared/Epic Games/UE_5.5` (59 GB), Xcode 26.6, macOS 26.6.2. The old "install UE5 + toolchain" task was stale.
