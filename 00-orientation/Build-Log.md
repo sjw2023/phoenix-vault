@@ -162,9 +162,37 @@ A running, dated log of what actually got built. Newest entries at the top. See 
   left unregistered. In a Bevy project a `never used` warning on a function you just wrote almost always
   means a missing registration.
 
+- **Checkpoint 16 — game-over screen.** `Text` + `TextFont { font_size: FontSize::Px(..) }` + `TextColor`,
+  three separate components so a system can animate colour without touching the string. Spawned on
+  `OnEnter(GameOver)`, despawned on `OnExit(GameOver)` — one place each thing happens, no `Visibility`
+  toggling. The hint line reads `DeathMode` so Hardcore does not promise a restart that will not come.
+- **Checkpoint 17 — enemy separation.** Each enemy is pushed from neighbours inside a radius, force
+  proportional to overlap. Needed a **two-pass** shape: collect `(Entity, Vec3)` into a `Vec`, then iterate
+  mutably against that snapshot — B0001 again, but harder, because this time the read set and the write set
+  are *the same set*, so no `Without` can separate them. Compares `Entity` rather than loop indices so it
+  cannot break if iteration order changes. O(n^2), fine at five.
+
+### Checkpoint 18 — hit flash, and the Startup ordering fact
+- All enemies share one material handle (deliberately — one mesh, one material, five handles), so tinting
+  the material would flash all five. Fix: **two shared materials in a resource, swap which handle the
+  entity points at.** `MeshMaterial3d<M>(pub Handle<M>)` is a tuple struct, so `material.0 = handle` is a
+  pointer swap, not an allocation.
+- `combat.rs` writes `Hit { target }` and says nothing about colour; `enemy.rs` reacts. Second use of the
+  message pattern, and the reason damage numbers and sound will need no change to `combat.rs`.
+- **Corrected fact:** `StateTransition` runs **before** `PreStartup`, not after Startup —
+  `bevy_state/src/app.rs:336`, `schedule.insert_startup_before(PreStartup, StateTransition)`. So
+  `OnEnter(AppState::Playing)` fires **before every `Startup` system**. A resource that an `OnEnter` spawn
+  depends on therefore cannot be created by a `Startup` system.
+- Fix: `impl FromWorld for EnemyMaterials` + `app.init_resource::<EnemyMaterials>()`, which runs during
+  `build()` — before any schedule. `FromWorld` says *how* to construct; `init_resource` is what calls it.
+  Having only the impl is the same silent half-wiring as a system without `add_systems`.
+- **Wiring omissions cost six rounds in one sitting.** `cargo run --features bevy/debug` names the failing
+  system in the panic instead of `<Enable the debug feature to see the name>`; worth leaving on.
+
 ### Next up
-- [ ] Game-over screen (text UI) — written, needs registering.
-- [ ] Enemy separation — they currently pile into one cube.
+- [ ] Knockback as a **second** reader of `Hit` — the test of the message architecture's claim.
+- [ ] Remaining M1 feel items: hitstop, floating damage number, death burst.
+- [ ] M1 loop closer: enemy death drops a placeholder cube that can be picked up.
 
 ## 2026-09-14 — Version control, vault restructure, project reset to empty
 - **Toolchain verified (not installed — already present):** UE 5.5 at `/Users/Shared/Epic Games/UE_5.5` (59 GB), Xcode 26.6, macOS 26.6.2. The old "install UE5 + toolchain" task was stale.
