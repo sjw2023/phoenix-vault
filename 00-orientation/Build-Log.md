@@ -189,9 +189,28 @@ A running, dated log of what actually got built. Newest entries at the top. See 
 - **Wiring omissions cost six rounds in one sitting.** `cargo run --features bevy/debug` names the failing
   system in the panic instead of `<Enable the debug feature to see the name>`; worth leaving on.
 
+- **Checkpoint 19 — knockback.** Added as a **second reader of `Hit`**, which was the test of the claim made
+  when messages went in: `flash_on_hit` was not touched, does not know knockback exists, and both readers see
+  every message because each `MessageReader` keeps its own cursor. The only change to `combat.rs` was adding
+  `direction: Dir3` to the message — information the attacker genuinely owns. *How hard the push should be*
+  stayed with the enemy.
+- Knockback (12 u/s for 0.10 s) and chase (3 u/s) both write `Transform` in the same frame, so the net motion
+  is a sharp punch followed by immediate recovery. No coordination between the two systems at all.
+- **Checkpoint 20 — hitstop.** `Time<Virtual>` scaled to 0.05 for 60 ms on impact. Bevy has two clocks:
+  plain `Res<Time>` is **virtual** (scalable, pausable) and everything in the project already reads it;
+  `Time<Real>` is wall-clock.
+- **The gotcha, which is the whole lesson:** the timer that ends a hitstop must tick on `Time<Real>`. On
+  virtual time it is slowed by the effect it exists to cancel — at 5% a 60 ms timer takes 1.2 s, and under
+  `pause()` it would **never finish**. Anything measuring how long an effect *on time* lasts must read the
+  clock that effect does not touch.
+- `hitstop_end` is deliberately **ungated**: dying mid-hitstop with a gated version would leave the game-over
+  screen running at 5% with no way back.
+- Feel numbers (knockback 12.0 / 0.10, hitstop 0.06 / 0.05) are **implemented but not yet judged** — M1's
+  only question is whether they feel right, and that is a playtest answer, not a code answer.
+
 ### Next up
-- [ ] Knockback as a **second** reader of `Hit` — the test of the message architecture's claim.
-- [ ] Remaining M1 feel items: hitstop, floating damage number, death burst.
+- [ ] Floating damage numbers — `world_to_viewport`, the inverse of the click-to-move raycast.
+- [ ] Death burst.
 - [ ] M1 loop closer: enemy death drops a placeholder cube that can be picked up.
 
 ## 2026-09-14 — Version control, vault restructure, project reset to empty
