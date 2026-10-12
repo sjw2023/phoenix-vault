@@ -47,6 +47,7 @@ tags: [project/phoenix, gamedev]
 
 ### Research — `03-research/`
 - [[00-Research-Hub]] — index of every research note
+- [[Rust-Keywords-Reference]] — **every Rust keyword**, the Book's definition, and where each appears in Phoenix
 - [[Git-LFS-Research-2026-09-14]] — why git needs LFS for game assets
 - [[Toolchain-Research-2026-09-14]] — which Unreal + Xcode can build on this Mac
 - [[Game-Production-Research-2026-09-14]] — how studios plan, compared with the design doc
