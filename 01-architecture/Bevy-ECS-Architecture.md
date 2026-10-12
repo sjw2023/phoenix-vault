@@ -138,6 +138,73 @@ composed world-space matrix (`Affine3A`) Bevy derives from the hierarchy.
 reads it. `Time<Real>` is wall-clock. Anything measuring how long an effect *on time* should last
 must read the clock that effect does not touch — the hitstop timer is the lived case.
 
+## Why Rust works this way — OOP, minus inheritance
+
+Source: *The Rust Programming Language*, ch. 18.1 *Characteristics of Object-Oriented Languages*
+and ch. 18.3 *Implementing an Object-Oriented Design Pattern* (checked 2026-10-12).
+
+Rust has two of the three classic OOP characteristics and deliberately drops the third.
+
+| characteristic | Rust | the Book's words |
+|---|---|---|
+| **Objects** (data + behaviour) | yes | *"Structs and enums have data, and `impl` blocks provide methods on structs and enums."* |
+| **Encapsulation** | yes | *"If encapsulation is a required aspect for a language to be considered object oriented, then Rust meets that requirement."* |
+| **Inheritance** | **no** | *"There is no way to define a struct that inherits the parent struct's fields and method implementations without using a macro."* |
+
+The two jobs inheritance did are split:
+
+- **Code reuse** → **default trait methods**: a trait ships an implementation every implementor gets
+  and may override.
+- **Substitutability** → **trait bounds** (the Book calls the generic form *bounded parametric
+  polymorphism*) or **trait objects** (`dyn Trait`) at runtime.
+
+`impl Plugin for EnemyPlugin` is that polymorphism: `add_plugins` accepts anything implementing
+`Plugin`, and the six plugins are substitutable through it — an interface satisfied by unrelated
+types, not a hierarchy under a common parent. Note the direction, `impl Trait for Type`, written
+apart from the type: a type can implement a trait declared in a crate it has never heard of.
+
+The Book is blunt about the reason: *"Inheritance is often at risk of sharing more code than
+necessary. Subclasses shouldn't always share all characteristics of their parent class but will do
+so with inheritance."*
+
+Unreal's `AActor` → `APawn` → `ACharacter` → *your subclass* is exactly the model Rust does not
+have, and ECS pushes further still — behaviour attaches to a **component set**, not to a type.
+
+## Design patterns in Rust — mostly yes, often reshaped
+
+Most Gang-of-Four patterns are implementable. Six are already in Phoenix, unnamed:
+
+| pattern | its form here |
+|---|---|
+| **Command** | `Commands` — literally a queue of deferred operations applied at a sync point |
+| **Factory** | `impl FromWorld for EnemyMaterials` — construct me, here is the World |
+| **Observer** | messages: `PlayerDied`, `Hit`, each reader with its own cursor |
+| **State** | `AppState` plus state-as-component-presence (`MoveTarget`, `Knockback`, `HitFlash`) |
+| **Singleton** | a Resource — one global value per type, `init_resource` |
+| **Strategy** | `match *mode` over `DeathMode`, selecting policy at the point of use |
+
+Patterns that **dissolve** rather than translate: Iterator is in the language; Null Object is
+`Option<T>`; Visitor is usually an `enum` plus `match`, because Rust has sum types and does not
+need double dispatch; several creational patterns lose their reason to exist without constructors
+to subvert.
+
+Patterns that **fight ownership**: anything built on shared mutable back-references — classic
+Observer holding `&mut` subjects, Composite with parent pointers, bidirectional graphs. The
+idiomatic answer is an id or index into a store rather than a pointer, which is precisely what an
+`Entity` is, and why Bevy models hierarchy as `ChildOf` / `Children` components instead of parent
+references.
+
+The Book's own caveat, worth keeping:
+
+> *"Even though Rust is capable of implementing object-oriented design patterns, other patterns,
+> such as encoding state into the type system, are also available in Rust... Object-oriented
+> patterns won't always be the best solution in Rust due to certain features, like ownership, that
+> object-oriented languages don't have."*
+
+Lived example of the type-system alternative: `Dir3` cannot hold a non-unit vector, so
+`Dir3::new(direction)` rejecting the zero vector *is* the "is the player moving?" check. A validity
+invariant became a type instead of a guard someone has to remember.
+
 ## Related
 
 - [[Bevy-Research-2026-09-25]] — why Bevy was chosen; ecosystem and costs
