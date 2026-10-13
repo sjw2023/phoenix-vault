@@ -35,6 +35,7 @@ tags: [project/phoenix, gamedev]
 
 ### Build steps — `02-build-steps/`
 - [[Step-1-Move-and-Attack]] — technical spec for build step 1
+- [[00-Code-History]] — **one note per commit, with the real diff** (generated from git, re-runnable)
 
 ### Claude memory — `99-claude-memory/`
 - [[99-claude-memory/README|Claude project memory (copy)]] — snapshot of Claude's working memory for this project; synced 2026-09-15
