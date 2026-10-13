@@ -209,8 +209,34 @@ A running, dated log of what actually got built. Newest entries at the top. See 
   only question is whether they feel right, and that is a playtest answer, not a code answer.
 
 ### Next up
-- [ ] Floating damage numbers — `world_to_viewport`, the inverse of the click-to-move raycast.
-- [ ] Death burst.
+- **Checkpoint 21 — damage numbers.** `world_to_viewport` — the inverse of the click-to-move raycast.
+  The number owns a **world** position and its `Node.left/top` are recomputed each frame, so it stays
+  pinned above the hit while the camera moves. Position travels **in the message**, not looked up from
+  the entity, so the killing blow still shows its number.
+- **Checkpoint 22 — death burst.** `EnemyDied { position }` read by `enemy.rs`; twelve pieces on an even
+  ring (`i as f32 / COUNT as f32 * TAU`), Euler gravity, shrinking instead of alpha-fading because all
+  twelve share one material handle. **M1's hit-feedback set is now complete.**
+
+### The despawn race — two rounds, one lesson
+- `insert`/`remove` aimed at an enemy that `death` despawns **in the same frame** panics when the command
+  buffer applies. A query guard does **not** help: the despawn is *also* a queued command, so "does it
+  exist now" does not answer "will it exist when mine lands".
+- Measured rather than guessed: 4/4 runs panicked, and a run that produced **0 kills produced 0 panics** —
+  which pinned the partner to `death` without a stack trace. Worth keeping as a technique: find a counter
+  you can grep, run several times, put the numbers side by side.
+- Fix is `try_insert` / `try_remove` / `try_despawn`. **Rule:** the plain form when you own the entity's
+  lifetime; the `try_` form when the entity came from a message, a stored `Entity`, or another system.
+- `enemy_chase` was the stubborn one — it removes `MoveTarget` *every frame* for anything inside
+  `ATTACK_RANGE`, and a dying enemy is by definition inside it, so it fired on every single kill.
+
+### Tooling
+- `features = ["debug"]` on the `bevy` dependency is now on. Panics name the system
+  (`phoenix::enemy::spawn_death_burst`) instead of `<Enable the debug feature to see the name>`.
+  Costs one full Bevy rebuild, slow here because `[profile.dev.package."*"] opt-level = 3`.
+- Three "Resource does not exist" panics all had the same cause: `impl FromWorld` written,
+  `init_resource` forgotten. `FromWorld` says *how* to build it; `init_resource` is what calls it.
+
+### Next up
 - [ ] M1 loop closer: enemy death drops a placeholder cube that can be picked up.
 
 ## 2026-09-14 — Version control, vault restructure, project reset to empty
