@@ -18,6 +18,7 @@ tags: [phoenix, plan, engine, rust]
 | rev | date | what changed |
 |---|---|---|
 | r0 | 2026-11-11 | Skeleton: history, what phoenix asks of an engine today (read from the code), open decisions D1–D2, parked decisions, NOT verified. |
+| r1 | 2026-11-11 | User answered *"B, Like vulkan"* — recorded under D2, awaiting confirmation; new D2a (Vulkan or Metal) with what this Mac has; §3.1 the university engine, found and read (CS-112, WebGL); its NOT-verified entry struck. |
 
 ## 1. Where this paper sits in the four steps
 
@@ -28,6 +29,7 @@ tags: [phoenix, plan, engine, rust]
   - **lock** — read in `~/Workspace/phoenix/Cargo.lock`
   - **vault** — a note in this vault, quoted
   - **user** — the user said it
+  - **probe** — a read-only check run on this Mac, with the command named
   - **general** — general knowledge, **not checked against a source** in this paper
 - The crate APIs the engine will call are still read from their source before this paper names a
   single call (checklist item 3 in §7). Waiving the research step does not waive that.
@@ -58,6 +60,28 @@ whether that still holds.
   `glam` 0.32.1.
 - **general** — roles of those four: `winit` opens windows and delivers input events; `wgpu` is a GPU
   API over Metal, Vulkan and DirectX 12; `naga` translates shaders; `glam` is vector and matrix math.
+
+### 3.1 What you built before — CS-112, WebGL (2018)
+
+**user** — *"I built engine on webgl, it should be somewhere in the sjw2023's repository."*
+It is `github.com/sjw2023/CS-112` ("UCI Computer Graphics", created 2018-11-28, 11 commits); a local
+copy is at `~/Workspace/UCI/112/Project/CS-112`.
+
+**code** — what it implements (counts over the user's own `.js`/`.html` files, excluding the bundled
+`gl-matrix`, `webgl-utils` and trackball files; about 9,800 lines):
+
+| engine part | evidence |
+|---|---|
+| Hand-written GLSL shaders, compiled and linked by its own code | `createShader` 14, `createProgram` 13 (`final_project/Final.js:154`), `gl_FragColor` 16 |
+| Indexed mesh drawing | `gl.drawElements` 8 |
+| Lighting: diffuse + specular with normal matrices, several lights (moon, pole light, car headlights) | `diffuse` 68, `specular` 84, `normalMatrix` 33; `Final.js` `draw()` passes `pointLightPosition`, `leftLightPosition`, `rightLightPosition`, `carLightDirection` |
+| Perspective camera, trackball view | `mat4.perspective` 6, `mat4.lookAt` 2, `rotator.getViewMatrix()` in `Final.js` `draw()` |
+| Textures and a cube-map skybox | `createTexture` 3, `TEXTURE_CUBE_MAP` 11 (`PA3/PA3/skybox.js`) |
+| Input and a frame loop | `keydown` 6, `mousedown` 1, `requestAnimationFrame` 2 |
+| **Not in it** | off-screen render targets (`createFramebuffer` 0), shadows (`shadow` 0); vector math came from `gl-matrix` |
+
+Against §4, this covers most of job 12 (3D rendering) and part of jobs 8–10 (input, window, camera).
+Jobs 1–7 (app, scheduling, ECS, spawning, messages, states, two clocks) and job 13 (screen text) are new.
 
 ## 4. What phoenix asks of an engine — the requirement list
 
@@ -164,9 +188,48 @@ hit-stop, the same damage numbers.
 | **B.** Raw Metal | Also the GPU layer | Window only | macOS only, permanently |
 | **C.** SDL bindings + OpenGL | Also the GPU layer | Window, input | OpenGL is deprecated on macOS (**general**) |
 
-**Recommendation: A.** Everything on the §4 list is yours to write. What is left to crates is the
+**Recommendation (r0): A.** Everything on the §4 list is yours to write. What is left to crates is the
 part that differs per operating system and teaches least about how an engine works. It is the Rust
 counterpart of what ADR-005 already named as the starting point (a thin framework such as SDL).
+
+> [!warning] **Answer received, not yet confirmed.** **user**, 2026-11-11: *"B, Like vulkan"*.
+> Read as: **D2 = B — you write the GPU layer yourself, on an explicit graphics API of the Vulkan
+> kind**; `winit` still opens the window. The reply named one letter for two questions, so D1 is
+> asked again rather than assumed. If "B" was meant for D1, this paper changes: phoenix gameplay
+> work would stop until the engine does all 13 jobs.
+
+What option B adds to §4 (**general** — the usual parts of an explicit GPU API, to be read from
+the chosen crate in checklist item 3): **14** GPU device, queues and memory for buffers and
+textures · **15** presenting frames to the window (surface and swapchain) · **16** pipelines and
+compiled shaders · **17** CPU–GPU synchronisation.
+
+#### D2a — which explicit API
+
+| | Vulkan | Metal |
+|---|---|---|
+| Rust crate | `ash` 0.38.0, built on Vulkan headers 1.3.281 (**lock**) | `objc2-metal` 0.3.2 (**lock**) |
+| Same crate `wgpu` uses for that backend | yes — `wgpu-hal` 29.0.4 depends on `ash` (**lock**) | yes — `wgpu-hal` 29.0.4 depends on `objc2-metal` 0.3.2 (**lock**) |
+| On this Mac | Not native: runs through MoltenVK, which translates Vulkan to Metal (**general**). **Not installed** (**probe** 2026-11-11: no `vulkaninfo`; no `~/VulkanSDK`; no `libvulkan` or `libMoltenVK` in `/usr/local/lib` or `/opt/homebrew/lib`; no Homebrew formula) | Native: Apple M1 Max, "Metal Support: Metal 4", macOS 27.0.1 (**probe** — `system_profiler SPDisplaysDataType`, `sw_vers`) |
+| Runs elsewhere | Windows, Linux, Android (**general**) | Apple platforms only (**general**) |
+| Shaders written in | GLSL or HLSL compiled to SPIR-V (**general**) | Metal Shading Language (**general**) — your CS-112 shaders are GLSL (§3.1) |
+
+**Recommendation: Vulkan** — it is the API you named, your GLSL experience carries over, and what
+you learn works on every desktop platform. The cost: the Vulkan SDK (with MoltenVK) has to be
+installed on this Mac first, and MoltenVK supports only part of Vulkan (**general** — to be
+checked in checklist item 3). Metal is the choice if you want no translation layer and accept
+Apple-only.
+
+```mermaid
+flowchart TB
+  G["phoenix slice (game code)"] --> E["your engine<br/>jobs 1–13 of §4"]
+  E --> R["your GPU layer — jobs 14–17<br/>device · memory · swapchain · pipelines · sync"]
+  E --> W["winit 0.30 — window + input events"]
+  R --> V["ash 0.38 — Vulkan 1.3"]
+  V --> MVK["MoltenVK (to install)"]
+  MVK --> MT["Metal — Apple M1 Max"]
+  R -. "D2a = Metal" .-> OM["objc2-metal 0.3"]
+  OM -.-> MT
+```
 
 ```mermaid
 flowchart TB
@@ -193,6 +256,7 @@ flowchart TB
 
 - [ ] 1. D1 decided → recorded as a new ADR in [[Decisions]]
 - [ ] 2. D2 decided → same ADR
+- [ ] 2a. D2a decided (Vulkan or Metal); if Vulkan, the Vulkan SDK install is approved by the user
 - [ ] 3. Read the chosen crates from source for every call this paper will name (signature, and one
       real call each: open a window, clear the screen to a colour)
 - [ ] 4. Per-job design for the 13 jobs in §4, with the code to be written
@@ -201,11 +265,9 @@ flowchart TB
 
 ## 8. NOT verified
 
-- **The university engine.** **user** — *"I did once at the university."* On disk, only two
-  related projects were found, and neither is an engine: the UCI CS 112 final project (WebGL with
-  `gl-matrix`, JavaScript, `~/Workspace/UCI/112/Project/CS-112/final_project`) and the CS 113 "PvE"
-  team game (Unity, C#, 2018, 35 commits, `~/Workspace/UCI/113/Repository`). What would settle it:
-  the user names the project, its language and what it covered, so this plan can reuse it.
+- ~~**The university engine.** On disk, only two related projects were found, and neither is an
+  engine: the CS 112 WebGL project and the CS 113 "PvE" Unity game.~~ **Resolved r1:** the user
+  named it — the WebGL engine is CS-112. Read and recorded in §3.1.
 - **Target platform.** ADR-006 set "macOS only" for the Unreal toolchain. It has not been decided
   for the engine.
 - **Crate roles and "wgpu runs on Metal"** — general knowledge; settled by checklist item 3.

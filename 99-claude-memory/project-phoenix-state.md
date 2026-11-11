@@ -17,7 +17,8 @@ Decided 2026-09-15: **co-op is in v1 — friends can join** (ADR-007), so the 3-
 
 Open decisions awaiting the user (do not treat as decided):
 - Engine D1: relation to phoenix — separate (A), phoenix moves onto it (B), or separate with a port of phoenix's slice as its first target (C, recommended).
-- Engine D2: how low — on winit + wgpu + glam (A, recommended; the layer Bevy 0.19.1 uses), raw Metal (B), SDL + OpenGL (C).
+- Engine D2: user answered *"B, Like vulkan"* (2026-11-11) — read as "write the GPU layer yourself on an explicit, Vulkan-kind API"; confirmation asked, because D1 got no separate answer. Sub-choice D2a: Vulkan via `ash` (needs Vulkan SDK + MoltenVK — NOT installed on this Mac) or Metal via `objc2-metal` (native, M1 Max). Recommended Vulkan.
+- The university engine = `github.com/sjw2023/CS-112` (WebGL, 2018): hand-written GLSL, Phong-style lights, textures, skybox, trackball camera; no shadows, no ECS. Recorded in Engine-Plan §3.1.
 - Hit-number throttle: how to stop Unreal dropping `MulticastHit` beyond 2 per object per update (Network-Protocol open question 1; recommended: raise `net.MaxRPCPerNetUpdate` + test).
 - Attack design: the user wants **both** single-target and cleave — design options presented, choice pending.
 - Co-op death: revive by a friend vs respawn, and any penalty.
