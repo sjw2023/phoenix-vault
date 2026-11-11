@@ -7,6 +7,10 @@ tags: [phoenix, plan, engine, rust]
 
 # Engine — Plan
 
+**What the project is for.** My own game engine, written in Rust, built to learn how an engine works
+from the inside — the frame loop, the ECS, the renderer — instead of using one, the way phoenix uses
+Bevy today. Whether phoenix ends up running on it is decision D1 ([[#5. Open decisions]]).
+
 > [!info] **What this is.** The plan paper for building my own game engine in Rust. Started 2026-11-11
 > at the user's request: *"I am planning to build own game engine with rust. I did once at the
 > university, so we can proceed the plan paper."*
@@ -19,6 +23,7 @@ tags: [phoenix, plan, engine, rust]
 |---|---|---|
 | r0 | 2026-11-11 | Skeleton: history, what phoenix asks of an engine today (read from the code), open decisions D1–D2, parked decisions, NOT verified. |
 | r1 | 2026-11-11 | User answered *"B, Like vulkan"* — recorded under D2, awaiting confirmation; new D2a (Vulkan or Metal) with what this Mac has; §3.1 the university engine, found and read (CS-112, WebGL); its NOT-verified entry struck. |
+| r2 | 2026-11-11 | Added the project introduction at the top (user: *"Lack of project introduction, write one to two sentence what the project is for"*). Sources: ADR-005 (*"teaches how engines work"*) and the user's request. |
 
 ## 1. Where this paper sits in the four steps
 
