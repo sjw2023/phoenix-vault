@@ -13,7 +13,11 @@ The user hand-writes game code to learn (ADR-003) — Claude drafts research/pla
 Decided 2026-09-15: **co-op is in v1 — friends can join** (ADR-007), so the 3-mode PIE matrix is a release gate and a
 "Sessions and joining" spec is needed. Player death at 0 HP confirmed.
 
+**2026-11-11 — own Rust game engine planned.** The user: *"I am planning to build own game engine with rust. I did once at the university, so we can proceed the plan paper."* Plan paper started at `04-production/Engine-Plan-2026-11-11.md` (research step waived by the user). ADR-005/008 had recorded the engine as a separate, later project. Paper only — no engine code until "go build". The university engine was not found on disk (UCI CS 112 = WebGL scene, CS 113 = Unity C# team game).
+
 Open decisions awaiting the user (do not treat as decided):
+- Engine D1: relation to phoenix — separate (A), phoenix moves onto it (B), or separate with a port of phoenix's slice as its first target (C, recommended).
+- Engine D2: how low — on winit + wgpu + glam (A, recommended; the layer Bevy 0.19.1 uses), raw Metal (B), SDL + OpenGL (C).
 - Hit-number throttle: how to stop Unreal dropping `MulticastHit` beyond 2 per object per update (Network-Protocol open question 1; recommended: raise `net.MaxRPCPerNetUpdate` + test).
 - Attack design: the user wants **both** single-target and cleave — design options presented, choice pending.
 - Co-op death: revive by a friend vs respawn, and any penalty.

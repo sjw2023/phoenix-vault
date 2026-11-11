@@ -75,6 +75,7 @@ tags: [project/phoenix, gamedev]
 - [x] Vault restructured into numbered clusters, matching the RPS / Vault-API convention (2026-09-14)
 - [x] [[Documentation-Framework]] written
 - [x] **Engine switched to Rust + Bevy 0.19** (2026-09-25) — [[Decisions]] ADR-008, facts in [[Bevy-Research-2026-09-25]]
+- [ ] **Own game engine in Rust — plan paper started** (2026-11-11) — [[Engine-Plan-2026-11-11]]; two decisions open (D1 relation to phoenix, D2 how low to go). Paper only, no engine code until "go build".
 - [ ] **Next: walking skeleton** — a cargo project that opens a window and draws a ground plane and a cube
 - [x] **Co-op in v1: friends can join** — [[Decisions]] ADR-007 (2026-09-15)
 - [x] Engine question settled: **stay on Unreal**; own engine = separate later project — [[Decisions]] ADR-005
